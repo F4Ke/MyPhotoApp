@@ -1,2 +1,0 @@
-# MyPhotoApp
-photo app
