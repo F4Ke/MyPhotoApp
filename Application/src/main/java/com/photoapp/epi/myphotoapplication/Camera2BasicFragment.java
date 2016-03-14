@@ -23,9 +23,13 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.Point;
@@ -44,6 +48,7 @@ import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
@@ -52,11 +57,14 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.photoapp.epi.myphotoapplication.R;
@@ -82,6 +90,10 @@ public class Camera2BasicFragment extends Fragment
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
     private static final int REQUEST_CAMERA_PERMISSION = 1;
     private static final String FRAGMENT_DIALOG = "dialog";
+    private ImageView myImageShow;
+    private ImageView myBackButton;
+    private FrameLayout myControlLayout;
+    private String stateApp = "base";
 
     static {
         ORIENTATIONS.append(Surface.ROTATION_0, 90);
@@ -245,6 +257,7 @@ public class Camera2BasicFragment extends Fragment
 
         @Override
         public void onImageAvailable(ImageReader reader) {
+
             mBackgroundHandler.post(new ImageSaver(reader.acquireNextImage(), mFile));
         }
 
@@ -418,20 +431,32 @@ public class Camera2BasicFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         return inflater.inflate(R.layout.fragment_camera2_basic, container, false);
+
     }
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         view.findViewById(R.id.picture).setOnClickListener(this);
         view.findViewById(R.id.info).setOnClickListener(this);
+
         mTextureView = (AutoFitTextureView) view.findViewById(R.id.texture);
+
+        myImageShow = (ImageView) getView().findViewById(R.id.image_saved_show);
+        myBackButton = (ImageView) getView().findViewById(R.id.image_saved_back);
+        myBackButton.setOnClickListener(back_to_camera);
+
+        myControlLayout = (FrameLayout) getView().findViewById(R.id.control);
+
+
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mFile = new File(getActivity().getExternalFilesDir(null), "pic.jpg");
+//        mFile = new File(getActivity().getExternalFilesDir(null), "pic.jpg");
+
     }
 
     @Override
@@ -825,6 +850,23 @@ public class Camera2BasicFragment extends Fragment
             int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
 
+            Long tsLong = System.currentTimeMillis();
+            String ts = tsLong.toString();
+
+            //
+            //
+            // SAVE IN CAMERA DIR
+            // -- ----- -- ------
+            // SAVE IN CAMERA DIR
+            //
+            //
+
+            File sdCard = Environment.getExternalStorageDirectory();
+            File dir = new File (sdCard.getAbsolutePath() + "/MyPhotoApp");
+            dir.mkdirs();
+            mFile = new File(dir, "pic"+ts+".jpg");
+
+
             CameraCaptureSession.CaptureCallback CaptureCallback
                     = new CameraCaptureSession.CaptureCallback() {
 
@@ -833,8 +875,12 @@ public class Camera2BasicFragment extends Fragment
                                                @NonNull CaptureRequest request,
                                                @NonNull TotalCaptureResult result) {
                     showToast("Saved: " + mFile);
+
                     Log.d(TAG, mFile.toString());
                     unlockFocus();
+
+                    showImageDone(mFile);
+
                 }
             };
 
@@ -844,6 +890,71 @@ public class Camera2BasicFragment extends Fragment
             e.printStackTrace();
         }
     }
+
+    private void showImageDone(File mFile) {
+
+        stateApp = "show_img";
+
+        final File final_file = mFile;
+        // show image
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+
+            public void run() {
+                //
+                Bitmap myBitmap = BitmapFactory.decodeFile(final_file.getAbsolutePath());
+                //
+                myImageShow.setImageBitmap(myBitmap);
+                myImageShow.setVisibility(View.VISIBLE);
+                myBackButton.setVisibility(View.VISIBLE);
+
+                myControlLayout.setVisibility(View.INVISIBLE);
+                mTextureView.setVisibility(View.INVISIBLE);
+
+            }
+        });
+
+
+
+    }
+
+    private View.OnClickListener back_to_camera = new View.OnClickListener() {
+        public void onClick(View v) {
+            if (stateApp == "show_img") {
+                myImageShow.setVisibility(View.INVISIBLE);
+                myControlLayout.setVisibility(View.VISIBLE);
+                mTextureView.setVisibility(View.VISIBLE);
+                myBackButton.setVisibility(View.INVISIBLE);
+                stateApp = "base";
+            }
+        }
+    };
+
+    /*@Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        showToast("test");
+        showToast(String.valueOf(KeyEvent.KEYCODE_BACK));
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_BACK:
+                showToast("OK ?");
+
+                if (stateApp == "show_img") {
+                    showToast("YEAHHHH");
+                    showToast("YEAHHHH");
+
+                    myImageShow.setVisibility(View.INVISIBLE);
+                    myControlLayout.setVisibility(View.VISIBLE);
+                    mTextureView.setVisibility(View.VISIBLE);
+                    stateApp = "base";
+                    return true;
+
+                } else {
+                    return super.onKeyDown(keyCode, event);
+                }
+        }
+    }
+*/
 
     /**
      * Unlock the focus. This method should be called when still image capture sequence is
@@ -877,7 +988,7 @@ public class Camera2BasicFragment extends Fragment
                 Activity activity = getActivity();
                 if (null != activity) {
                     new AlertDialog.Builder(activity)
-                            .setMessage(R.string.intro_message)
+                            .setMessage("Ths app is made for an Epitech Projet by forel_m and baussa_b;")
                             .setPositiveButton(android.R.string.ok, null)
                             .show();
                 }

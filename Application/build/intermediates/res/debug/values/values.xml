@@ -39,6 +39,7 @@
     <color name="cardview_shadow_start_color">#37000000</color>
     <!-- From: file:/Users/Matthieu/Dropbox/Android/MyPhotoApplication/Application/src/main/res/values/colors.xml -->
     <eat-comment/>
+    <color name="control_back_grey">#93A1AC</color>
     <color name="control_background">#cc4285f4</color>
     <!-- From: file:/Users/Matthieu/Dropbox/Android/MyPhotoApplication/Application/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.0/res/values/values.xml -->
     <eat-comment/>
