@@ -35,6 +35,8 @@ import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
@@ -47,6 +49,7 @@ import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
+import android.opengl.GLES10;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -92,6 +95,8 @@ public class Camera2BasicFragment extends Fragment
     private static final String FRAGMENT_DIALOG = "dialog";
     private ImageView myImageShow;
     private ImageView myBackButton;
+    private int myScreenHeight = 0;
+    private int myScreenWidth = 0;
     private FrameLayout myControlLayout;
     private String stateApp = "base";
 
@@ -568,6 +573,8 @@ public class Camera2BasicFragment extends Fragment
                 int rotatedPreviewHeight = height;
                 int maxPreviewWidth = displaySize.x;
                 int maxPreviewHeight = displaySize.y;
+                myScreenHeight = displaySize.y;
+                myScreenWidth = displaySize.x;
 
                 if (swappedDimensions) {
                     rotatedPreviewWidth = height;
@@ -894,31 +901,54 @@ public class Camera2BasicFragment extends Fragment
         }
     }
 
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            while ((halfHeight / inSampleSize) > reqHeight
+                    && (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
+
     private void showImageDone(File mFile) {
-
+        if (!mFile.exists()) {
+            return;
+        }
         stateApp = "show_img";
-
         final File final_file = mFile;
-        // show image
+
         getActivity().runOnUiThread(new Runnable() {
             @Override
 
             public void run() {
                 //
-                Bitmap myBitmap = BitmapFactory.decodeFile(final_file.getAbsolutePath());
-                //
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inScaled = true;
+
+                Bitmap myBitmap = BitmapFactory.decodeFile(final_file.getAbsolutePath(), options);
+                Bitmap bitResult = Bitmap.createScaledBitmap(myBitmap, myScreenHeight, myScreenHeight, false);
+                Drawable myDraw = new BitmapDrawable(getResources(), bitResult);
+
                 myImageShow.setImageBitmap(myBitmap);
+                myImageShow.setBackground(myDraw);
                 myImageShow.setVisibility(View.VISIBLE);
                 myBackButton.setVisibility(View.VISIBLE);
 
                 myControlLayout.setVisibility(View.INVISIBLE);
                 mTextureView.setVisibility(View.INVISIBLE);
-
             }
         });
-
-
-
     }
 
     private View.OnClickListener back_to_camera = new View.OnClickListener() {
