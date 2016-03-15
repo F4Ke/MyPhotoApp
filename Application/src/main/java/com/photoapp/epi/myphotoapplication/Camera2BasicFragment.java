@@ -809,6 +809,7 @@ public class Camera2BasicFragment extends Fragment
             // This is how to tell the camera to lock focus.
             mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,
                     CameraMetadata.CONTROL_AF_TRIGGER_START);
+            mPreviewRequestBuilder.set(CaptureRequest.CONTROL_EFFECT_MODE, 4);
 
             // Tell #mCaptureCallback to wait for the lock.
             mState = STATE_WAITING_LOCK;
@@ -828,6 +829,8 @@ public class Camera2BasicFragment extends Fragment
             // This is how to tell the camera to trigger.
             mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER,
                     CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER_START);
+            mPreviewRequestBuilder.set(CaptureRequest.CONTROL_EFFECT_MODE, 4);
+
             // Tell #mCaptureCallback to wait for the precapture sequence to be set.
             mState = STATE_WAITING_PRECAPTURE;
             mCaptureSession.capture(mPreviewRequestBuilder.build(), mCaptureCallback,
@@ -857,6 +860,10 @@ public class Camera2BasicFragment extends Fragment
                     CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
             setAutoFlash(captureBuilder);
 
+            // TRAITEMENT IMAGE
+            captureBuilder.set(CaptureRequest.CONTROL_EFFECT_MODE, 4);
+
+
             // Orientation
             int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
@@ -872,9 +879,19 @@ public class Camera2BasicFragment extends Fragment
             //
             //
 
-            File folder = new File(Environment.getExternalStorageDirectory() + "/Pictures/MyMobileApp");
-            boolean result = folder.mkdirs();
-            mFile = new File(folder, "pic"+ts+".jpg");
+
+            // V1
+
+            //File folder = new File(Environment.getExternalStorageDirectory() + "/Pictures/MyMobileApp");
+            // boolean result = folder.mkdirs();
+            //mFile = new File(folder, "pic"+ts+".jpg");
+
+            // TEST
+
+            // V2
+
+            mFile = new File(getActivity().getExternalFilesDir(null),"pic"+ts+".jpg");
+
 
 
             CameraCaptureSession.CaptureCallback CaptureCallback
@@ -999,6 +1016,8 @@ public class Camera2BasicFragment extends Fragment
             mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,
                     CameraMetadata.CONTROL_AF_TRIGGER_CANCEL);
             setAutoFlash(mPreviewRequestBuilder);
+            mPreviewRequestBuilder.set(CaptureRequest.CONTROL_EFFECT_MODE, 4);
+
             mCaptureSession.capture(mPreviewRequestBuilder.build(), mCaptureCallback,
                     mBackgroundHandler);
             // After this, the camera will go back to the normal state of preview.
