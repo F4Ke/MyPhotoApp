@@ -865,7 +865,7 @@ public class Camera2BasicFragment extends Fragment
             //
             //
 
-            File folder = new File(Environment.getExternalStorageDirectory() + "/MyPhotoApp");
+            File folder = new File(Environment.getExternalStorageDirectory() + "/Pictures/MyMobileApp");
             boolean result = folder.mkdirs();
             mFile = new File(folder, "pic"+ts+".jpg");
 
