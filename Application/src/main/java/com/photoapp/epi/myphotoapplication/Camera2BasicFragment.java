@@ -710,6 +710,9 @@ public class Camera2BasicFragment extends Fragment
                     = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             mPreviewRequestBuilder.addTarget(surface);
 
+            mPreviewRequestBuilder.set(CaptureRequest.CONTROL_EFFECT_MODE, 4);
+
+
             // Here, we create a CameraCaptureSession for camera preview.
             mCameraDevice.createCaptureSession(Arrays.asList(surface, mImageReader.getSurface()),
                     new CameraCaptureSession.StateCallback() {
@@ -799,6 +802,7 @@ public class Camera2BasicFragment extends Fragment
             // This is how to tell the camera to lock focus.
             mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,
                     CameraMetadata.CONTROL_AF_TRIGGER_START);
+
             // Tell #mCaptureCallback to wait for the lock.
             mState = STATE_WAITING_LOCK;
             mCaptureSession.capture(mPreviewRequestBuilder.build(), mCaptureCallback,
@@ -861,10 +865,9 @@ public class Camera2BasicFragment extends Fragment
             //
             //
 
-            File sdCard = Environment.getExternalStorageDirectory();
-            File dir = new File (sdCard.getAbsolutePath() + "/MyPhotoApp");
-            dir.mkdirs();
-            mFile = new File(dir, "pic"+ts+".jpg");
+            File folder = new File(Environment.getExternalStorageDirectory() + "/MyPhotoApp");
+            boolean result = folder.mkdirs();
+            mFile = new File(folder, "pic"+ts+".jpg");
 
 
             CameraCaptureSession.CaptureCallback CaptureCallback
