@@ -30,8 +30,13 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
@@ -74,6 +79,7 @@ import android.widget.Toast;
 
 import com.photoapp.epi.myphotoapplication.R;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -108,9 +114,9 @@ public class Camera2BasicFragment extends Fragment
 
     private int filtrer_choice = 0;
 
-    private HashMap filter_choice_table = new HashMap<String, Integer>() {{ put("none", 0); put("retro", 4); }};
+    private HashMap filter_choice_table = new HashMap<String, Integer>() {{ put("none", 0); put("mono", 1); put("negative", 2);put("solarize", 3); put("sepia", 4); put("whiteboard", 6); put("blackboard", 7);  }}; /*put("retro", 4); // custom */
 
-    private String[] array_integer_filter = {"none", "retro"};
+    private String[] array_integer_filter = {"none","mono", "negative", "solarize" ,"sepia", "whiteboard", "blackboard"}; /* , "retro" // custom*/
 
 
 
@@ -277,7 +283,7 @@ public class Camera2BasicFragment extends Fragment
         @Override
         public void onImageAvailable(ImageReader reader) {
 
-            mBackgroundHandler.post(new ImageSaver(reader.acquireNextImage(), mFile));
+            mBackgroundHandler.post(new ImageSaver(reader.acquireNextImage(), mFile, array_integer_filter[filtrer_choice]));
         }
 
     };
@@ -916,11 +922,16 @@ public class Camera2BasicFragment extends Fragment
             // Use the same AE and AF modes as the preview.
             captureBuilder.set(CaptureRequest.CONTROL_AF_MODE,
                     CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
+
+
             setAutoFlash(captureBuilder);
 
             // TRAITEMENT IMAGE
-            captureBuilder.set(CaptureRequest.CONTROL_EFFECT_MODE, getFilterNumber());
-
+            //
+            if ( array_integer_filter[filtrer_choice] != "retro" ) {
+                captureBuilder.set(CaptureRequest.CONTROL_EFFECT_MODE, getFilterNumber());
+            }
+            //
 
             // Orientation
             int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
@@ -995,7 +1006,7 @@ public class Camera2BasicFragment extends Fragment
                 Bitmap bitResult = Bitmap.createScaledBitmap(myBitmap, myScreenWidth, myScreenHeight, false);
                 Drawable myDraw = new BitmapDrawable(getResources(), bitResult);
 
-                myImageShow.setImageBitmap(myBitmap);
+                //myImageShow.setImageBitmap(myBitmap);
                 myImageShow.setBackground(myDraw);
                 myImageShow.setVisibility(View.VISIBLE);
                 myBackButton.setVisibility(View.VISIBLE);
@@ -1112,6 +1123,7 @@ public class Camera2BasicFragment extends Fragment
      */
     private static class ImageSaver implements Runnable {
 
+        private final String filter_choice_rendering;
         /**
          * The JPEG image
          */
@@ -1121,15 +1133,63 @@ public class Camera2BasicFragment extends Fragment
          */
         private final File mFile;
 
-        public ImageSaver(Image image, File file) {
+        public ImageSaver(Image image, File file, String choice_render) {
             mImage = image;
             mFile = file;
+            filter_choice_rendering = choice_render;
         }
+
+        public Bitmap ByteArrayToBitmap(byte[] byteArray)
+        {
+            ByteArrayInputStream arrayInputStream = new ByteArrayInputStream(byteArray);
+            Bitmap bitmap = BitmapFactory.decodeStream(arrayInputStream);
+            return bitmap;
+        }
+
+        /**
+         * @param bitmap
+         * Bitmap object from which you want to get bytes
+         * @return byte[] array of bytes by compressing the bitmap to PNG format <br/>
+         * null if bitmap passed is null (or) failed to get bytes from the
+         * bitmap
+         */
+        public static byte[] convertBitmapToByteArray(Bitmap bitmap) {
+            if (bitmap == null) {
+                return null;
+            } else {
+                byte[] b = null;
+                try {
+                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 0, byteArrayOutputStream);
+                    b = byteArrayOutputStream.toByteArray();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return b;
+            }
+        }
+
 
         @Override
         public void run() {
+
             ByteBuffer buffer = mImage.getPlanes()[0].getBuffer();
+
             byte[] bytes = new byte[buffer.remaining()];
+
+
+            //
+            //
+
+         /*   if ( filter_choice_rendering == "retro" ) {
+                Bitmap tmp_image = ByteArrayToBitmap(bytes);
+                Bitmap f_image= toSephia(tmp_image);
+                bytes = convertBitmapToByteArray(f_image);
+            }
+            */
+            //
+            //
+
             buffer.get(bytes);
             FileOutputStream output = null;
             try {
@@ -1195,6 +1255,48 @@ public class Camera2BasicFragment extends Fragment
         }
 
     }
+
+    public static Bitmap toSephia(Bitmap bmpOriginal)
+    {
+        int width, height, r,g, b, c, gry;
+        height = bmpOriginal.getHeight();
+        width = bmpOriginal.getWidth();
+        int depth = 20;
+
+        Bitmap bmpSephia = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bmpSephia);
+        Paint paint = new Paint();
+        ColorMatrix cm = new ColorMatrix();
+        cm.setScale(.3f, .3f, .3f, 1.0f);
+        ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
+        paint.setColorFilter(f);
+        canvas.drawBitmap(bmpOriginal, 0, 0, paint);
+        for(int x=0; x < width; x++) {
+            for(int y=0; y < height; y++) {
+                c = bmpOriginal.getPixel(x, y);
+
+                r = Color.red(c);
+                g = Color.green(c);
+                b = Color.blue(c);
+
+                gry = (r + g + b) / 3;
+                r = g = b = gry;
+
+                r = r + (depth * 2);
+                g = g + depth;
+
+                if(r > 255) {
+                    r = 255;
+                }
+                if(g > 255) {
+                    g = 255;
+                }
+                bmpSephia.setPixel(x, y, Color.rgb(r, g, b));
+            }
+        }
+        return bmpSephia;
+    }
+
 
     /**
      * Shows OK/Cancel confirmation dialog about camera permission.
