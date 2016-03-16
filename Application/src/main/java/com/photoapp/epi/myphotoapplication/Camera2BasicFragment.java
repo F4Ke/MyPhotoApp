@@ -63,6 +63,7 @@ import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
@@ -82,6 +83,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
@@ -102,6 +105,14 @@ public class Camera2BasicFragment extends Fragment
     private int myScreenWidth = 0;
     private FrameLayout myControlLayout;
     private String stateApp = "base";
+
+    private int filtrer_choice = 0;
+
+    private HashMap filter_choice_table = new HashMap<String, Integer>() {{ put("none", 0); put("retro", 4); }};
+
+    private String[] array_integer_filter = {"none", "retro"};
+
+
 
     static {
         ORIENTATIONS.append(Surface.ROTATION_0, 90);
@@ -451,6 +462,29 @@ public class Camera2BasicFragment extends Fragment
 
         mTextureView = (AutoFitTextureView) view.findViewById(R.id.texture);
 
+        mTextureView.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+
+                //int action = event.getAction();
+                switch (event.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        filtrer_choice++;
+                        break;
+                }
+
+                if (filtrer_choice >= array_integer_filter.length)
+                {
+                    filtrer_choice = 0;
+                }
+
+
+                setFilterToCamera();
+
+                return true;
+            }
+        });
+
+
         myImageShow = (ImageView) getView().findViewById(R.id.image_saved_show);
         myBackButton = (ImageView) getView().findViewById(R.id.image_saved_back);
         myBackButton.setOnClickListener(back_to_camera);
@@ -460,6 +494,17 @@ public class Camera2BasicFragment extends Fragment
         myControlLayout = (FrameLayout) getView().findViewById(R.id.control);
 
 
+    }
+
+    public int getFilterNumber()
+    {
+        return Integer.parseInt(String.valueOf(filter_choice_table.get(array_integer_filter[filtrer_choice])));
+    }
+
+    public void setFilterToCamera()
+    {
+        mPreviewRequestBuilder.set(CaptureRequest.CONTROL_EFFECT_MODE, getFilterNumber());
+        //mPreviewRequestBuilder.build();
     }
 
     @Override
@@ -500,6 +545,11 @@ public class Camera2BasicFragment extends Fragment
                     REQUEST_CAMERA_PERMISSION);
         }
     }
+
+
+
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
@@ -722,7 +772,7 @@ public class Camera2BasicFragment extends Fragment
                     = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             mPreviewRequestBuilder.addTarget(surface);
 
-            mPreviewRequestBuilder.set(CaptureRequest.CONTROL_EFFECT_MODE, 4);
+            mPreviewRequestBuilder.set(CaptureRequest.CONTROL_EFFECT_MODE, getFilterNumber());
 
 
             // Here, we create a CameraCaptureSession for camera preview.
@@ -814,7 +864,8 @@ public class Camera2BasicFragment extends Fragment
             // This is how to tell the camera to lock focus.
             mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,
                     CameraMetadata.CONTROL_AF_TRIGGER_START);
-            mPreviewRequestBuilder.set(CaptureRequest.CONTROL_EFFECT_MODE, 4);
+
+            mPreviewRequestBuilder.set(CaptureRequest.CONTROL_EFFECT_MODE, getFilterNumber());
 
             // Tell #mCaptureCallback to wait for the lock.
             mState = STATE_WAITING_LOCK;
@@ -834,7 +885,7 @@ public class Camera2BasicFragment extends Fragment
             // This is how to tell the camera to trigger.
             mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER,
                     CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER_START);
-            mPreviewRequestBuilder.set(CaptureRequest.CONTROL_EFFECT_MODE, 4);
+            mPreviewRequestBuilder.set(CaptureRequest.CONTROL_EFFECT_MODE, getFilterNumber());
 
             // Tell #mCaptureCallback to wait for the precapture sequence to be set.
             mState = STATE_WAITING_PRECAPTURE;
@@ -866,7 +917,7 @@ public class Camera2BasicFragment extends Fragment
             setAutoFlash(captureBuilder);
 
             // TRAITEMENT IMAGE
-            captureBuilder.set(CaptureRequest.CONTROL_EFFECT_MODE, 4);
+            captureBuilder.set(CaptureRequest.CONTROL_EFFECT_MODE, getFilterNumber());
 
 
             // Orientation
@@ -1014,7 +1065,7 @@ public class Camera2BasicFragment extends Fragment
             mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,
                     CameraMetadata.CONTROL_AF_TRIGGER_CANCEL);
             setAutoFlash(mPreviewRequestBuilder);
-            mPreviewRequestBuilder.set(CaptureRequest.CONTROL_EFFECT_MODE, 4);
+            mPreviewRequestBuilder.set(CaptureRequest.CONTROL_EFFECT_MODE, getFilterNumber());
 
             mCaptureSession.capture(mPreviewRequestBuilder.build(), mCaptureCallback,
                     mBackgroundHandler);
