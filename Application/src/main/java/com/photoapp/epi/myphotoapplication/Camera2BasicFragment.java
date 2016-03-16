@@ -49,6 +49,7 @@ import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
+import android.net.Uri;
 import android.opengl.GLES10;
 import android.os.Bundle;
 import android.os.Environment;
@@ -72,6 +73,7 @@ import android.widget.Toast;
 
 import com.photoapp.epi.myphotoapplication.R;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -95,6 +97,7 @@ public class Camera2BasicFragment extends Fragment
     private static final String FRAGMENT_DIALOG = "dialog";
     private ImageView myImageShow;
     private ImageView myBackButton;
+    private ImageView myShareButton;
     private int myScreenHeight = 0;
     private int myScreenWidth = 0;
     private FrameLayout myControlLayout;
@@ -451,6 +454,8 @@ public class Camera2BasicFragment extends Fragment
         myImageShow = (ImageView) getView().findViewById(R.id.image_saved_show);
         myBackButton = (ImageView) getView().findViewById(R.id.image_saved_back);
         myBackButton.setOnClickListener(back_to_camera);
+        myShareButton = (ImageView) getView().findViewById(R.id.image_saved_share);
+        myShareButton.setOnClickListener(share_image);
 
         myControlLayout = (FrameLayout) getView().findViewById(R.id.control);
 
@@ -918,28 +923,9 @@ public class Camera2BasicFragment extends Fragment
         }
     }
 
-    public static int calculateInSampleSize(
-            BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            while ((halfHeight / inSampleSize) > reqHeight
-                    && (halfWidth / inSampleSize) > reqWidth) {
-                inSampleSize *= 2;
-            }
-        }
-
-        return inSampleSize;
-    }
-
     private void showImageDone(File mFile) {
         if (!mFile.exists()) {
+            showToast("Error: Image "+mFile.getName() + " not found.");
             return;
         }
         stateApp = "show_img";
@@ -952,16 +938,15 @@ public class Camera2BasicFragment extends Fragment
                 //
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inScaled = true;
-
                 Bitmap myBitmap = BitmapFactory.decodeFile(final_file.getAbsolutePath(), options);
-                Bitmap bitResult = Bitmap.createScaledBitmap(myBitmap, myScreenHeight, myScreenHeight, false);
+                Bitmap bitResult = Bitmap.createScaledBitmap(myBitmap, myScreenWidth, myScreenHeight, false);
                 Drawable myDraw = new BitmapDrawable(getResources(), bitResult);
 
                 myImageShow.setImageBitmap(myBitmap);
                 myImageShow.setBackground(myDraw);
                 myImageShow.setVisibility(View.VISIBLE);
                 myBackButton.setVisibility(View.VISIBLE);
-
+                myShareButton.setVisibility(View.VISIBLE);
                 myControlLayout.setVisibility(View.INVISIBLE);
                 mTextureView.setVisibility(View.INVISIBLE);
             }
@@ -975,7 +960,20 @@ public class Camera2BasicFragment extends Fragment
                 myControlLayout.setVisibility(View.VISIBLE);
                 mTextureView.setVisibility(View.VISIBLE);
                 myBackButton.setVisibility(View.INVISIBLE);
+                myShareButton.setVisibility(View.INVISIBLE);
                 stateApp = "base";
+            }
+        }
+    };
+
+    private View.OnClickListener share_image = new View.OnClickListener() {
+        public void onClick(View v) {
+            if (stateApp == "show_img") {
+                Log.v("BOOP", "Boop.");
+                Intent share = new Intent(Intent.ACTION_SEND);
+                share.setType("image/jpeg");
+                share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + mFile.getAbsolutePath()));
+                startActivity(Intent.createChooser(share, "Share Image"));
             }
         }
     };
