@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/Users/Matthieu/Dropbox/Android/MyPhotoApp/Application/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.0/res/values/values.xml -->
+    <!-- From: file:/C:/Users/Tinki/Documents/GitHub/MyPhotoApp/Application/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.0/res/values/values.xml -->
     <eat-comment/>
     <attr format="reference" name="drawerArrowStyle"/>
     <attr format="dimension" name="height"/>
@@ -31,17 +31,17 @@
     <color name="bright_foreground_material_light">@android:color/black</color>
     <color name="button_material_dark">#ff5a595b</color>
     <color name="button_material_light">#ffd6d7d7</color>
-    <!-- From: file:/Users/Matthieu/Dropbox/Android/MyPhotoApp/Application/build/intermediates/exploded-aar/com.android.support/cardview-v7/23.1.0/res/values/values.xml -->
+    <!-- From: file:/C:/Users/Tinki/Documents/GitHub/MyPhotoApp/Application/build/intermediates/exploded-aar/com.android.support/cardview-v7/23.1.0/res/values/values.xml -->
     <eat-comment/>
     <color name="cardview_dark_background">#FF202020</color>
     <color name="cardview_light_background">#FFFAFAFA</color>
     <color name="cardview_shadow_end_color">#03000000</color>
     <color name="cardview_shadow_start_color">#37000000</color>
-    <!-- From: file:/Users/Matthieu/Dropbox/Android/MyPhotoApp/Application/src/main/res/values/colors.xml -->
+    <!-- From: file:/C:/Users/Tinki/Documents/GitHub/MyPhotoApp/Application/src/main/res/values/colors.xml -->
     <eat-comment/>
     <color name="control_back_grey">#93A1AC</color>
     <color name="control_background">#cc4285f4</color>
-    <!-- From: file:/Users/Matthieu/Dropbox/Android/MyPhotoApp/Application/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.0/res/values/values.xml -->
+    <!-- From: file:/C:/Users/Tinki/Documents/GitHub/MyPhotoApp/Application/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.0/res/values/values.xml -->
     <eat-comment/>
     <color name="dim_foreground_disabled_material_dark">#80bebebe</color>
     <color name="dim_foreground_disabled_material_light">#80323232</color>
@@ -171,12 +171,12 @@
     <dimen name="abc_text_size_subtitle_material_toolbar">16dp</dimen>
     <dimen name="abc_text_size_title_material">20sp</dimen>
     <dimen name="abc_text_size_title_material_toolbar">20dp</dimen>
-    <!-- From: file:/Users/Matthieu/Dropbox/Android/MyPhotoApp/Application/build/intermediates/exploded-aar/com.android.support/cardview-v7/23.1.0/res/values/values.xml -->
+    <!-- From: file:/C:/Users/Tinki/Documents/GitHub/MyPhotoApp/Application/build/intermediates/exploded-aar/com.android.support/cardview-v7/23.1.0/res/values/values.xml -->
     <eat-comment/>
     <dimen name="cardview_compat_inset_shadow">1dp</dimen>
     <dimen name="cardview_default_elevation">2dp</dimen>
     <dimen name="cardview_default_radius">2dp</dimen>
-    <!-- From: file:/Users/Matthieu/Dropbox/Android/MyPhotoApp/Application/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.0/res/values/values.xml -->
+    <!-- From: file:/C:/Users/Tinki/Documents/GitHub/MyPhotoApp/Application/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.0/res/values/values.xml -->
     <eat-comment/>
     <item name="dialog_fixed_height_major" type="dimen">80%</item>
     <item name="dialog_fixed_height_minor" type="dimen">100%</item>
@@ -187,7 +187,7 @@
     <item format="float" name="highlight_alpha_material_colored" type="dimen">0.26</item>
     <item format="float" name="highlight_alpha_material_dark" type="dimen">0.20</item>
     <item format="float" name="highlight_alpha_material_light" type="dimen">0.12</item>
-    <!-- From: file:/Users/Matthieu/Dropbox/Android/MyPhotoApp/Application/src/main/res/values/template-dimens.xml -->
+    <!-- From: file:/C:/Users/Tinki/Documents/GitHub/MyPhotoApp/Application/src/main/res/values/template-dimens.xml -->
     <eat-comment/>
     <dimen name="horizontal_page_margin">@dimen/margin_medium</dimen>
     <dimen name="margin_huge">64dp</dimen>
@@ -195,15 +195,15 @@
     <dimen name="margin_medium">16dp</dimen>
     <dimen name="margin_small">8dp</dimen>
     <dimen name="margin_tiny">4dp</dimen>
-    <!-- From: file:/Users/Matthieu/Dropbox/Android/MyPhotoApp/Application/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.0/res/values/values.xml -->
+    <!-- From: file:/C:/Users/Tinki/Documents/GitHub/MyPhotoApp/Application/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.0/res/values/values.xml -->
     <eat-comment/>
     <dimen name="notification_large_icon_height">64dp</dimen>
     <dimen name="notification_large_icon_width">64dp</dimen>
     <dimen name="notification_subtext_size">12dp</dimen>
-    <!-- From: file:/Users/Matthieu/Dropbox/Android/MyPhotoApp/Application/src/main/res/values/template-dimens.xml -->
+    <!-- From: file:/C:/Users/Tinki/Documents/GitHub/MyPhotoApp/Application/src/main/res/values/template-dimens.xml -->
     <eat-comment/>
     <dimen name="vertical_page_margin">@dimen/margin_medium</dimen>
-    <!-- From: file:/Users/Matthieu/Dropbox/Android/MyPhotoApp/Application/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.0/res/values/values.xml -->
+    <!-- From: file:/C:/Users/Tinki/Documents/GitHub/MyPhotoApp/Application/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.0/res/values/values.xml -->
     <eat-comment/>
     <drawable name="notification_template_icon_bg">#3333B5E5</drawable>
     <item name="action_bar_activity_content" type="id"/>
@@ -237,14 +237,14 @@
     <string name="abc_shareactionprovider_share_with">Share with</string>
     <string name="abc_shareactionprovider_share_with_application">Share with %s</string>
     <string name="abc_toolbar_collapse_description">Collapse</string>
-    <!-- From: file:/Users/Matthieu/Dropbox/Android/MyPhotoApp/Application/src/main/res/values/base-strings.xml -->
+    <!-- From: file:/C:/Users/Tinki/Documents/GitHub/MyPhotoApp/Application/src/main/res/values/base-strings.xml -->
     <eat-comment/>
     <string name="app_name">Camera2Basic</string>
-    <!-- From: file:/Users/Matthieu/Dropbox/Android/MyPhotoApp/Application/src/main/res/values/strings.xml -->
+    <!-- From: file:/C:/Users/Tinki/Documents/GitHub/MyPhotoApp/Application/src/main/res/values/strings.xml -->
     <eat-comment/>
     <string name="camera_error">This device doesn\'t support Camera2 API.</string>
     <string name="description_info">Info</string>
-    <!-- From: file:/Users/Matthieu/Dropbox/Android/MyPhotoApp/Application/src/main/res/values/base-strings.xml -->
+    <!-- From: file:/C:/Users/Tinki/Documents/GitHub/MyPhotoApp/Application/src/main/res/values/base-strings.xml -->
     <eat-comment/>
     <string name="intro_message">
         <![CDATA[
@@ -256,21 +256,21 @@
         
         ]]>
     </string>
-    <!-- From: file:/Users/Matthieu/Dropbox/Android/MyPhotoApp/Application/src/main/res/values/strings.xml -->
+    <!-- From: file:/C:/Users/Tinki/Documents/GitHub/MyPhotoApp/Application/src/main/res/values/strings.xml -->
     <eat-comment/>
     <string name="picture">Picture</string>
     <string name="request_permission">This sample needs camera permission.</string>
-    <!-- From: file:/Users/Matthieu/Dropbox/Android/MyPhotoApp/Application/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.0/res/values/values.xml -->
+    <!-- From: file:/C:/Users/Tinki/Documents/GitHub/MyPhotoApp/Application/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.0/res/values/values.xml -->
     <eat-comment/>
     <string name="status_bar_notification_info_overflow">999+</string>
     <style name="AlertDialog.AppCompat" parent="Base.AlertDialog.AppCompat"/>
     <style name="AlertDialog.AppCompat.Light" parent="Base.AlertDialog.AppCompat.Light"/>
     <style name="Animation.AppCompat.Dialog" parent="Base.Animation.AppCompat.Dialog"/>
     <style name="Animation.AppCompat.DropDownUp" parent="Base.Animation.AppCompat.DropDownUp"/>
-    <!-- From: file:/Users/Matthieu/Dropbox/Android/MyPhotoApp/Application/src/main/res/values/template-styles.xml -->
+    <!-- From: file:/C:/Users/Tinki/Documents/GitHub/MyPhotoApp/Application/src/main/res/values/template-styles.xml -->
     <eat-comment/>
     <style name="AppTheme" parent="Theme.Sample"/>
-    <!-- From: file:/Users/Matthieu/Dropbox/Android/MyPhotoApp/Application/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.0/res/values/values.xml -->
+    <!-- From: file:/C:/Users/Tinki/Documents/GitHub/MyPhotoApp/Application/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.0/res/values/values.xml -->
     <eat-comment/>
     <style name="Base.AlertDialog.AppCompat" parent="android:Widget">
         <item name="android:layout">@layout/abc_alert_dialog_material</item>
@@ -1185,7 +1185,7 @@
         <item name="android:minWidth">56dp</item>
         <item name="android:scaleType">center</item>
     </style>
-    <!-- From: file:/Users/Matthieu/Dropbox/Android/MyPhotoApp/Application/build/intermediates/exploded-aar/com.android.support/cardview-v7/23.1.0/res/values/values.xml -->
+    <!-- From: file:/C:/Users/Tinki/Documents/GitHub/MyPhotoApp/Application/build/intermediates/exploded-aar/com.android.support/cardview-v7/23.1.0/res/values/values.xml -->
     <eat-comment/>
     <style name="CardView">
         <item name="cardBackgroundColor">@color/cardview_light_background</item>
@@ -1201,10 +1201,10 @@
     <style name="CardView.Light">
         <item name="cardBackgroundColor">@color/cardview_light_background</item>
     </style>
-    <!-- From: file:/Users/Matthieu/Dropbox/Android/MyPhotoApp/Application/src/main/res/values/styles.xml -->
+    <!-- From: file:/C:/Users/Tinki/Documents/GitHub/MyPhotoApp/Application/src/main/res/values/styles.xml -->
     <eat-comment/>
     <style name="MaterialTheme" parent="android:Theme.Material.Light.NoActionBar.Fullscreen"/>
-    <!-- From: file:/Users/Matthieu/Dropbox/Android/MyPhotoApp/Application/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.0/res/values/values.xml -->
+    <!-- From: file:/C:/Users/Tinki/Documents/GitHub/MyPhotoApp/Application/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.0/res/values/values.xml -->
     <eat-comment/>
     <style name="Platform.AppCompat" parent="android:Theme">
         <item name="android:windowNoTitle">true</item>
@@ -1435,21 +1435,21 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-    <!-- From: file:/Users/Matthieu/Dropbox/Android/MyPhotoApp/Application/src/main/res/values/template-styles.xml -->
+    <!-- From: file:/C:/Users/Tinki/Documents/GitHub/MyPhotoApp/Application/src/main/res/values/template-styles.xml -->
     <eat-comment/>
     <style name="Theme.Base" parent="android:Theme.Light"/>
     <style name="Theme.Sample" parent="Theme.Base"/>
-    <!-- From: file:/Users/Matthieu/Dropbox/Android/MyPhotoApp/Application/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.0/res/values/values.xml -->
+    <!-- From: file:/C:/Users/Tinki/Documents/GitHub/MyPhotoApp/Application/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.0/res/values/values.xml -->
     <eat-comment/>
     <style name="ThemeOverlay.AppCompat" parent="Base.ThemeOverlay.AppCompat"/>
     <style name="ThemeOverlay.AppCompat.ActionBar" parent="Base.ThemeOverlay.AppCompat.ActionBar"/>
     <style name="ThemeOverlay.AppCompat.Dark" parent="Base.ThemeOverlay.AppCompat.Dark"/>
     <style name="ThemeOverlay.AppCompat.Dark.ActionBar" parent="Base.ThemeOverlay.AppCompat.Dark.ActionBar"/>
     <style name="ThemeOverlay.AppCompat.Light" parent="Base.ThemeOverlay.AppCompat.Light"/>
-    <!-- From: file:/Users/Matthieu/Dropbox/Android/MyPhotoApp/Application/src/main/res/values/template-styles.xml -->
+    <!-- From: file:/C:/Users/Tinki/Documents/GitHub/MyPhotoApp/Application/src/main/res/values/template-styles.xml -->
     <eat-comment/>
     <style name="Widget"/>
-    <!-- From: file:/Users/Matthieu/Dropbox/Android/MyPhotoApp/Application/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.0/res/values/values.xml -->
+    <!-- From: file:/C:/Users/Tinki/Documents/GitHub/MyPhotoApp/Application/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.0/res/values/values.xml -->
     <eat-comment/>
     <style name="Widget.AppCompat.ActionBar" parent="Base.Widget.AppCompat.ActionBar">
     </style>
@@ -1542,7 +1542,7 @@
     <style name="Widget.AppCompat.TextView.SpinnerItem" parent="Base.Widget.AppCompat.TextView.SpinnerItem"/>
     <style name="Widget.AppCompat.Toolbar" parent="Base.Widget.AppCompat.Toolbar"/>
     <style name="Widget.AppCompat.Toolbar.Button.Navigation" parent="Base.Widget.AppCompat.Toolbar.Button.Navigation"/>
-    <!-- From: file:/Users/Matthieu/Dropbox/Android/MyPhotoApp/Application/src/main/res/values/template-styles.xml -->
+    <!-- From: file:/C:/Users/Tinki/Documents/GitHub/MyPhotoApp/Application/src/main/res/values/template-styles.xml -->
     <eat-comment/>
     <style name="Widget.SampleMessage">
         <item name="android:textAppearance">?android:textAppearanceMedium</item>

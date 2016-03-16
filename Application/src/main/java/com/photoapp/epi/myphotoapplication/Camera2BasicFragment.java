@@ -23,7 +23,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -55,9 +54,7 @@ import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
 import android.net.Uri;
-import android.opengl.GLES10;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
@@ -66,7 +63,6 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -75,9 +71,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
-
-import com.photoapp.epi.myphotoapplication.R;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -90,14 +85,17 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
+import static com.photoapp.epi.myphotoapplication.R.id.*;
+import static com.photoapp.epi.myphotoapplication.R.id.picture;
+import static com.photoapp.epi.myphotoapplication.R.id.textView_activeFilter;
+
 public class Camera2BasicFragment extends Fragment
         implements View.OnClickListener, FragmentCompat.OnRequestPermissionsResultCallback {
-
     /**
      * Conversion from screen rotation to JPEG orientation.
      */
@@ -107,6 +105,7 @@ public class Camera2BasicFragment extends Fragment
     private ImageView myImageShow;
     private ImageView myBackButton;
     private ImageView myShareButton;
+    private TextView textView_active_Filter;
     private int myScreenHeight = 0;
     private int myScreenWidth = 0;
     private FrameLayout myControlLayout;
@@ -117,8 +116,6 @@ public class Camera2BasicFragment extends Fragment
     private HashMap filter_choice_table = new HashMap<String, Integer>() {{ put("none", 0); put("mono", 1); put("negative", 2);put("solarize", 3); put("sepia", 4); put("whiteboard", 6); put("blackboard", 7);  }}; /*put("retro", 4); // custom */
 
     private String[] array_integer_filter = {"none","mono", "negative", "solarize" ,"sepia", "whiteboard", "blackboard"}; /* , "retro" // custom*/
-
-
 
     static {
         ORIENTATIONS.append(Surface.ROTATION_0, 90);
@@ -463,10 +460,10 @@ public class Camera2BasicFragment extends Fragment
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
-        view.findViewById(R.id.picture).setOnClickListener(this);
-        view.findViewById(R.id.info).setOnClickListener(this);
+        view.findViewById(picture).setOnClickListener(this);
+        view.findViewById(info).setOnClickListener(this);
 
-        mTextureView = (AutoFitTextureView) view.findViewById(R.id.texture);
+        mTextureView = (AutoFitTextureView) view.findViewById(texture);
 
         mTextureView.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
@@ -490,17 +487,14 @@ public class Camera2BasicFragment extends Fragment
             }
         });
 
-
-        myImageShow = (ImageView) getView().findViewById(R.id.image_saved_show);
-        myBackButton = (ImageView) getView().findViewById(R.id.image_saved_back);
-
+        myImageShow = (ImageView) getView().findViewById(image_saved_show);
+        myBackButton = (ImageView) getView().findViewById(image_saved_back);
         myBackButton.setOnClickListener(back_to_camera);
-        myShareButton = (ImageView) getView().findViewById(R.id.image_saved_share);
+        myShareButton = (ImageView) getView().findViewById(image_saved_share);
         myShareButton.setOnClickListener(share_image);
+        textView_active_Filter = (TextView) getView().findViewById(textView_activeFilter);
 
-        myControlLayout = (FrameLayout) getView().findViewById(R.id.control);
-
-
+        myControlLayout = (FrameLayout) getView().findViewById(control);
     }
 
     public int getFilterNumber()
@@ -511,7 +505,7 @@ public class Camera2BasicFragment extends Fragment
     public void setFilterToCamera()
     {
         mPreviewRequestBuilder.set(CaptureRequest.CONTROL_EFFECT_MODE, getFilterNumber());
-        showToast("Change filter to " + array_integer_filter[filtrer_choice]);
+        textView_active_Filter.setText(array_integer_filter[filtrer_choice].substring(0,1).toUpperCase() + array_integer_filter[filtrer_choice].substring(1).toLowerCase());
         //mPreviewRequestBuilder.build();
     }
 
@@ -553,11 +547,6 @@ public class Camera2BasicFragment extends Fragment
                     REQUEST_CAMERA_PERMISSION);
         }
     }
-
-
-
-
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
@@ -928,7 +917,7 @@ public class Camera2BasicFragment extends Fragment
 
             // TRAITEMENT IMAGE
             //
-            if ( array_integer_filter[filtrer_choice] != "retro" ) {
+            if (!array_integer_filter[filtrer_choice].equals("retro")) {
                 captureBuilder.set(CaptureRequest.CONTROL_EFFECT_MODE, getFilterNumber());
             }
             //
@@ -999,14 +988,12 @@ public class Camera2BasicFragment extends Fragment
             @Override
 
             public void run() {
-                //
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inScaled = true;
                 Bitmap myBitmap = BitmapFactory.decodeFile(final_file.getAbsolutePath(), options);
                 Bitmap bitResult = Bitmap.createScaledBitmap(myBitmap, myScreenWidth, myScreenHeight, false);
                 Drawable myDraw = new BitmapDrawable(getResources(), bitResult);
 
-                //myImageShow.setImageBitmap(myBitmap);
                 myImageShow.setBackground(myDraw);
                 myImageShow.setVisibility(View.VISIBLE);
                 myBackButton.setVisibility(View.VISIBLE);
@@ -1019,7 +1006,7 @@ public class Camera2BasicFragment extends Fragment
 
     private View.OnClickListener back_to_camera = new View.OnClickListener() {
         public void onClick(View v) {
-            if (stateApp == "show_img") {
+            if (Objects.equals(stateApp, "show_img")) {
                 myImageShow.setVisibility(View.INVISIBLE);
                 myControlLayout.setVisibility(View.VISIBLE);
                 mTextureView.setVisibility(View.VISIBLE);
@@ -1032,7 +1019,7 @@ public class Camera2BasicFragment extends Fragment
 
     private View.OnClickListener share_image = new View.OnClickListener() {
         public void onClick(View v) {
-            if (stateApp == "show_img") {
+            if (stateApp.equals("show_img")) {
                 Log.v("BOOP", "Boop.");
                 Intent share = new Intent(Intent.ACTION_SEND);
                 share.setType("image/jpeg");
@@ -1041,32 +1028,6 @@ public class Camera2BasicFragment extends Fragment
             }
         }
     };
-
-    /*@Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-
-        showToast("test");
-        showToast(String.valueOf(KeyEvent.KEYCODE_BACK));
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_BACK:
-                showToast("OK ?");
-
-                if (stateApp == "show_img") {
-                    showToast("YEAHHHH");
-                    showToast("YEAHHHH");
-
-                    myImageShow.setVisibility(View.INVISIBLE);
-                    myControlLayout.setVisibility(View.VISIBLE);
-                    mTextureView.setVisibility(View.VISIBLE);
-                    stateApp = "base";
-                    return true;
-
-                } else {
-                    return super.onKeyDown(keyCode, event);
-                }
-        }
-    }
-*/
 
     /**
      * Unlock the focus. This method should be called when still image capture sequence is
@@ -1094,11 +1055,11 @@ public class Camera2BasicFragment extends Fragment
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.picture: {
+            case picture: {
                 takePicture();
                 break;
             }
-            case R.id.info: {
+            case info: {
                 Activity activity = getActivity();
                 if (null != activity) {
                     new AlertDialog.Builder(activity)

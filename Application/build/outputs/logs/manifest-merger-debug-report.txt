@@ -1,12 +1,12 @@
 -- Merging decision tree log ---
 manifest
 ADDED from AndroidManifest.xml:18:1
+	xmlns:android
+		ADDED from AndroidManifest.xml:18:11
 	package
 		ADDED from AndroidManifest.xml:19:5
 		INJECTED from AndroidManifest.xml:0:0
 		INJECTED from AndroidManifest.xml:0:0
-	xmlns:android
-		ADDED from AndroidManifest.xml:18:11
 uses-permission#android.permission.CAMERA
 ADDED from AndroidManifest.xml:21:5
 	android:name
