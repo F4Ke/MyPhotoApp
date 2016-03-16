@@ -487,6 +487,7 @@ public class Camera2BasicFragment extends Fragment
 
         myImageShow = (ImageView) getView().findViewById(R.id.image_saved_show);
         myBackButton = (ImageView) getView().findViewById(R.id.image_saved_back);
+
         myBackButton.setOnClickListener(back_to_camera);
         myShareButton = (ImageView) getView().findViewById(R.id.image_saved_share);
         myShareButton.setOnClickListener(share_image);
@@ -504,6 +505,7 @@ public class Camera2BasicFragment extends Fragment
     public void setFilterToCamera()
     {
         mPreviewRequestBuilder.set(CaptureRequest.CONTROL_EFFECT_MODE, getFilterNumber());
+        showToast("Change filter to " + array_integer_filter[filtrer_choice]);
         //mPreviewRequestBuilder.build();
     }
 
