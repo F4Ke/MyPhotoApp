@@ -1827,7 +1827,7 @@ containing a value of this type.
         public static final int abc_search_view=0x7f030016;
         public static final int abc_select_dialog_material=0x7f030017;
         public static final int activity_camera=0x7f030018;
-        public static final int fragment_camera2_basic=0x7f030019;
+        public static final int fragment_camera_filter_snap=0x7f030019;
         public static final int notification_media_action=0x7f03001a;
         public static final int notification_media_cancel_action=0x7f03001b;
         public static final int notification_template_big_media=0x7f03001c;

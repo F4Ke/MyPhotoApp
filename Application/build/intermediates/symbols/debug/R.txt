@@ -588,7 +588,7 @@ int layout abc_search_dropdown_item_icons_2line 0x7f030015
 int layout abc_search_view 0x7f030016
 int layout abc_select_dialog_material 0x7f030017
 int layout activity_camera 0x7f030018
-int layout fragment_camera2_basic 0x7f030019
+int layout fragment_camera_filter_snap 0x7f030019
 int layout notification_media_action 0x7f03001a
 int layout notification_media_cancel_action 0x7f03001b
 int layout notification_template_big_media 0x7f03001c
