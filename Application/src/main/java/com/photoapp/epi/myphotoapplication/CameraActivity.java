@@ -19,8 +19,6 @@ package com.photoapp.epi.myphotoapplication;
 import android.app.Activity;
 import android.os.Bundle;
 
-import com.photoapp.epi.myphotoapplication.R;
-
 public class CameraActivity extends Activity {
 
     @Override
@@ -29,7 +27,7 @@ public class CameraActivity extends Activity {
         setContentView(R.layout.activity_camera);
         if (null == savedInstanceState) {
             getFragmentManager().beginTransaction()
-                    .replace(R.id.container, Camera2BasicFragment.newInstance())
+                    .replace(R.id.container, CameraFilterSnapFragment.newInstance())
                     .commit();
         }
     }
