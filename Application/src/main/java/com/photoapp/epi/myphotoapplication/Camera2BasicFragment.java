@@ -90,6 +90,7 @@ import java.util.Objects;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
+import static android.view.View.INVISIBLE;
 import static com.photoapp.epi.myphotoapplication.R.id.*;
 import static com.photoapp.epi.myphotoapplication.R.id.picture;
 import static com.photoapp.epi.myphotoapplication.R.id.textView_activeFilter;
@@ -105,6 +106,7 @@ public class Camera2BasicFragment extends Fragment
     private ImageView myImageShow;
     private ImageView myBackButton;
     private ImageView myShareButton;
+    private ImageView myLoading;
     private TextView textView_active_Filter;
     private int myScreenHeight = 0;
     private int myScreenWidth = 0;
@@ -492,6 +494,7 @@ public class Camera2BasicFragment extends Fragment
         myBackButton.setOnClickListener(back_to_camera);
         myShareButton = (ImageView) getView().findViewById(image_saved_share);
         myShareButton.setOnClickListener(share_image);
+        myLoading = (ImageView) getView().findViewById(image_loading);
         textView_active_Filter = (TextView) getView().findViewById(textView_activeFilter);
 
         myControlLayout = (FrameLayout) getView().findViewById(control);
@@ -504,7 +507,8 @@ public class Camera2BasicFragment extends Fragment
 
     public void setFilterToCamera()
     {
-        textView_active_Filter.setText(array_integer_filter[filtrer_choice].substring(0,1).toUpperCase() + array_integer_filter[filtrer_choice].substring(1).toLowerCase());
+        textView_active_Filter.setText(array_integer_filter[filtrer_choice].substring(0,1).toUpperCase()
+                + array_integer_filter[filtrer_choice].substring(1).toLowerCase());
         //mPreviewRequestBuilder.set(CaptureRequest.CONTROL_EFFECT_MODE, getFilterNumber());
         //mPreviewRequestBuilder.build();
 
@@ -951,8 +955,6 @@ public class Camera2BasicFragment extends Fragment
 
             mFile = new File(getActivity().getExternalFilesDir(null),"pic"+ts+".jpg");
 
-
-
             CameraCaptureSession.CaptureCallback CaptureCallback
                     = new CameraCaptureSession.CaptureCallback() {
 
@@ -999,8 +1001,9 @@ public class Camera2BasicFragment extends Fragment
                 myImageShow.setVisibility(View.VISIBLE);
                 myBackButton.setVisibility(View.VISIBLE);
                 myShareButton.setVisibility(View.VISIBLE);
-                myControlLayout.setVisibility(View.INVISIBLE);
-                mTextureView.setVisibility(View.INVISIBLE);
+                myControlLayout.setVisibility(INVISIBLE);
+                mTextureView.setVisibility(INVISIBLE);
+                myLoading.setVisibility(INVISIBLE);
             }
         });
     }
@@ -1008,11 +1011,12 @@ public class Camera2BasicFragment extends Fragment
     private View.OnClickListener back_to_camera = new View.OnClickListener() {
         public void onClick(View v) {
             if (Objects.equals(stateApp, "show_img")) {
-                myImageShow.setVisibility(View.INVISIBLE);
+                myImageShow.setVisibility(INVISIBLE);
                 myControlLayout.setVisibility(View.VISIBLE);
                 mTextureView.setVisibility(View.VISIBLE);
-                myBackButton.setVisibility(View.INVISIBLE);
-                myShareButton.setVisibility(View.INVISIBLE);
+                myBackButton.setVisibility(INVISIBLE);
+                myShareButton.setVisibility(INVISIBLE);
+                myLoading.setVisibility(INVISIBLE);
                 stateApp = "base";
             }
         }
@@ -1021,7 +1025,6 @@ public class Camera2BasicFragment extends Fragment
     private View.OnClickListener share_image = new View.OnClickListener() {
         public void onClick(View v) {
             if (stateApp.equals("show_img")) {
-                Log.v("BOOP", "Boop.");
                 Intent share = new Intent(Intent.ACTION_SEND);
                 share.setType("image/jpeg");
                 share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + mFile.getAbsolutePath()));
@@ -1083,7 +1086,7 @@ public class Camera2BasicFragment extends Fragment
     /**
      * Saves a JPEG {@link Image} into the specified {@link File}.
      */
-    private static class ImageSaver implements Runnable {
+    private class ImageSaver implements Runnable {
 
         private final String filter_choice_rendering;
         /**
@@ -1119,7 +1122,7 @@ public class Camera2BasicFragment extends Fragment
          * null if bitmap passed is null (or) failed to get bytes from the
          * bitmap
          */
-        public static byte[] convertBitmapToByteArray(Bitmap bitmap) {
+        public byte[] convertBitmapToByteArray(Bitmap bitmap) {
             Log.e("TOTO", String.valueOf(bitmap));
             if (bitmap == null) {
                 return null;
@@ -1141,6 +1144,21 @@ public class Camera2BasicFragment extends Fragment
             }
         }
 
+        public void loadingWait() {
+            final Activity activity = getActivity();
+            if (activity != null) {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ImageView myLoading = (ImageView) getView().findViewById(image_loading);
+                        FrameLayout myControlLayout = (FrameLayout) getView().findViewById(control);
+
+                        myControlLayout.setVisibility(INVISIBLE);
+                        myLoading.setVisibility(View.VISIBLE);
+                    }
+                });
+            }
+        }
 
         @Override
         public void run() {
@@ -1149,18 +1167,12 @@ public class Camera2BasicFragment extends Fragment
 
             byte[] bytes = new byte[buffer.remaining()];
 
-
-
             buffer.get(bytes);
-
 
             FileOutputStream output = null;
 
-
-            //
-            //
-
-            if ( filter_choice_rendering == "retro" ) {
+                if (filter_choice_rendering.equals("retro")) {
+                    loadingWait();
                 Bitmap tmp_image = ByteArrayToBitmap(bytes);
                 Log.e("BITMAAAAAP", String.valueOf(tmp_image));
                 Bitmap f_image= toSephia(tmp_image);

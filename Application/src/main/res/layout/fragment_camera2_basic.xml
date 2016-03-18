@@ -50,20 +50,29 @@
         android:layout_height="wrap_content"
         android:id="@+id/image_saved_share"
 
-        android:background="@drawable/back_button"
-        android:visibility="visible"
+        android:background="@drawable/share_button"
+        android:visibility="gone"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true" />
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/image_loading"
+        android:background="@drawable/loading"
+        android:visibility="gone"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
     <FrameLayout
         android:id="@+id/control"
-        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="112dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:background="@color/control_back_grey">
+        android:background="@color/control_back_grey"
+        android:visibility="visible">
 
 
         <ImageButton
