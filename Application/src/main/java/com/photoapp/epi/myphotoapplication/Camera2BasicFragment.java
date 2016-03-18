@@ -516,6 +516,8 @@ public class Camera2BasicFragment extends Fragment
                 + array_integer_filter[filtrer_choice].substring(1).toLowerCase());
         //mPreviewRequestBuilder.set(CaptureRequest.CONTROL_EFFECT_MODE, getFilterNumber());
         //mPreviewRequestBuilder.build();
+
+        /*
         mPreviewRequest = mPreviewRequestBuilder.build();
         try {
             mCaptureSession.setRepeatingRequest(mPreviewRequest,
@@ -525,6 +527,7 @@ public class Camera2BasicFragment extends Fragment
             Log.e("error camera", String.valueOf(e));
         }
 
+*/
     }
 
     @Override
