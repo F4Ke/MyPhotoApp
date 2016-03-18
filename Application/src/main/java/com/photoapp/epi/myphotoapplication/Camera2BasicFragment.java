@@ -55,6 +55,7 @@ import android.media.Image;
 import android.media.ImageReader;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
@@ -491,9 +492,13 @@ public class Camera2BasicFragment extends Fragment
 
         myImageShow = (ImageView) getView().findViewById(image_saved_show);
         myBackButton = (ImageView) getView().findViewById(image_saved_back);
-        myBackButton.setOnClickListener(back_to_camera);
+        if (myBackButton != null) {
+            myBackButton.setOnClickListener(back_to_camera);
+        }
         myShareButton = (ImageView) getView().findViewById(image_saved_share);
-        myShareButton.setOnClickListener(share_image);
+        if (myShareButton != null) {
+            myShareButton.setOnClickListener(share_image);
+        }
         myLoading = (ImageView) getView().findViewById(image_loading);
         textView_active_Filter = (TextView) getView().findViewById(textView_activeFilter);
 
@@ -511,6 +516,14 @@ public class Camera2BasicFragment extends Fragment
                 + array_integer_filter[filtrer_choice].substring(1).toLowerCase());
         //mPreviewRequestBuilder.set(CaptureRequest.CONTROL_EFFECT_MODE, getFilterNumber());
         //mPreviewRequestBuilder.build();
+        mPreviewRequest = mPreviewRequestBuilder.build();
+        try {
+            mCaptureSession.setRepeatingRequest(mPreviewRequest,
+                    mCaptureCallback, mBackgroundHandler);
+        }catch (Exception e)
+        {
+            Log.e("error camera", String.valueOf(e));
+        }
 
     }
 
@@ -564,6 +577,7 @@ public class Camera2BasicFragment extends Fragment
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+
     }
 
     /**
@@ -945,13 +959,13 @@ public class Camera2BasicFragment extends Fragment
 
             // V1
 
-            //File folder = new File(Environment.getExternalStorageDirectory() + "/Pictures/MyMobileApp");
-            // boolean result = folder.mkdirs();
-            //mFile = new File(folder, "pic"+ts+".jpg");
+          //  File folder = new File(Environment.getExternalStorageDirectory() + "/Pictures/MyMobileApp");
+          //  boolean result = folder.mkdirs();
+          //  mFile = new File(folder, "pic"+ts+".jpg");
 
             // TEST
 
-            // V2
+            // V0
 
             mFile = new File(getActivity().getExternalFilesDir(null),"pic"+ts+".jpg");
 
@@ -1106,12 +1120,7 @@ public class Camera2BasicFragment extends Fragment
 
         public Bitmap ByteArrayToBitmap(byte[] byteArray)
         {
-            //ByteArrayInputStream arrayInputStream = new ByteArrayInputStream(byteArray);
-            Log.e("test -> arry byte = ", String.valueOf(byteArray));
-            Log.e("byteArray.length = ", String.valueOf(byteArray.length));
-            //Bitmap bitmap = BitmapFactory.decodeStream()
             Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-            Log.e("bitmap ici ->>> ", String.valueOf(bmp));
             return bmp;
         }
 
@@ -1123,22 +1132,17 @@ public class Camera2BasicFragment extends Fragment
          * bitmap
          */
         public byte[] convertBitmapToByteArray(Bitmap bitmap) {
-            Log.e("TOTO", String.valueOf(bitmap));
             if (bitmap == null) {
                 return null;
             } else {
                 byte[] b = null;
                 try {
-                    Log.e("TOTO", "test");
                     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 0, byteArrayOutputStream);
-                    Log.e("TOTO", String.valueOf(bitmap));
                     b = byteArrayOutputStream.toByteArray();
-                    Log.e("TOTO", String.valueOf(b));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                Log.e("TOTO", "fin");
 
                 return b;
             }
@@ -1160,6 +1164,23 @@ public class Camera2BasicFragment extends Fragment
             }
         }
 
+        public void loadingStop() {
+            final Activity activity = getActivity();
+            if (activity != null) {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ImageView myLoading = (ImageView) getView().findViewById(image_loading);
+                        FrameLayout myControlLayout = (FrameLayout) getView().findViewById(control);
+
+                        myControlLayout.setVisibility(View.VISIBLE);
+                        myLoading.setVisibility(View.INVISIBLE);
+                    }
+                });
+            }
+        }
+
+
         @Override
         public void run() {
 
@@ -1173,12 +1194,10 @@ public class Camera2BasicFragment extends Fragment
 
                 if (filter_choice_rendering.equals("retro")) {
                     loadingWait();
-                Bitmap tmp_image = ByteArrayToBitmap(bytes);
-                Log.e("BITMAAAAAP", String.valueOf(tmp_image));
-                Bitmap f_image= toSephia(tmp_image);
-                Log.e("BITMAAAAAP 222", String.valueOf(f_image));
-                bytes = convertBitmapToByteArray(f_image);
-                Log.e("bytes 2", String.valueOf(bytes));
+                    Bitmap tmp_image = ByteArrayToBitmap(bytes);
+                    Bitmap f_image= toSephia(tmp_image);
+                    bytes = convertBitmapToByteArray(f_image);
+                    loadingStop();
             }
 
             //
@@ -1186,9 +1205,7 @@ public class Camera2BasicFragment extends Fragment
             try {
                 output = new FileOutputStream(mFile);
                 output.write(bytes);
-                Log.e("WRITE", "OK");
             } catch (IOException e) {
-                Log.e("WRITE", "NOK");
                 e.printStackTrace();
             } finally {
                 mImage.close();
@@ -1251,18 +1268,12 @@ public class Camera2BasicFragment extends Fragment
 
     public static Bitmap toSephia(Bitmap bmpOriginal)
     {
-
-        Log.e("SEPHIA", "TEsT ICI");
-
         int width, height, r,g, b, c, gry;
         height = bmpOriginal.getHeight();
         width = bmpOriginal.getWidth();
         int depth = 20;
 
         Bitmap bmpSephia = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-
-        Log.e("SEPHIA", String.valueOf(bmpSephia));
-
 
         Canvas canvas = new Canvas(bmpSephia);
         Paint paint = new Paint();
@@ -1272,7 +1283,6 @@ public class Camera2BasicFragment extends Fragment
         paint.setColorFilter(f);
         canvas.drawBitmap(bmpOriginal, 0, 0, paint);
         for(int x=0; x < width; x++) {
-            Log.e("BOUCLE SEPHIA", String.valueOf(x));
 
             for(int y=0; y < height; y++) {
                 c = bmpOriginal.getPixel(x, y);
@@ -1296,7 +1306,6 @@ public class Camera2BasicFragment extends Fragment
                 bmpSephia.setPixel(x, y, Color.rgb(r, g, b));
             }
         }
-        Log.e("SEPHIA", String.valueOf(bmpSephia));
 
         return bmpSephia;
     }
