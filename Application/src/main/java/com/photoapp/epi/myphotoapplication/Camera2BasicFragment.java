@@ -113,9 +113,9 @@ public class Camera2BasicFragment extends Fragment
 
     private int filtrer_choice = 0;
 
-    private HashMap filter_choice_table = new HashMap<String, Integer>() {{ put("none", 0); put("mono", 1); put("negative", 2);put("solarize", 3); put("sepia", 4); put("whiteboard", 6); put("blackboard", 7);  }}; /*put("retro", 4); // custom */
+    private HashMap filter_choice_table = new HashMap<String, Integer>() {{ put("none", 0); put("mono", 1); put("negative", 2);put("solarize", 3); put("sepia", 4); put("whiteboard", 6); put("blackboard", 7); put("retro", 4); }}; /*put("retro", 4); // custom */
 
-    private String[] array_integer_filter = {"none","mono", "negative", "solarize" ,"sepia", "whiteboard", "blackboard"}; /* , "retro" // custom*/
+    private String[] array_integer_filter = {"none","mono", "negative", "solarize" ,"sepia", "whiteboard", "blackboard", "retro"}; /* , "retro" // custom*/
 
     static {
         ORIENTATIONS.append(Surface.ROTATION_0, 90);
@@ -504,9 +504,10 @@ public class Camera2BasicFragment extends Fragment
 
     public void setFilterToCamera()
     {
-        mPreviewRequestBuilder.set(CaptureRequest.CONTROL_EFFECT_MODE, getFilterNumber());
         textView_active_Filter.setText(array_integer_filter[filtrer_choice].substring(0,1).toUpperCase() + array_integer_filter[filtrer_choice].substring(1).toLowerCase());
+        //mPreviewRequestBuilder.set(CaptureRequest.CONTROL_EFFECT_MODE, getFilterNumber());
         //mPreviewRequestBuilder.build();
+
     }
 
     @Override
@@ -915,7 +916,7 @@ public class Camera2BasicFragment extends Fragment
 
             setAutoFlash(captureBuilder);
 
-            // TRAITEMENT IMAGE
+            //
             //
             if (!array_integer_filter[filtrer_choice].equals("retro")) {
                 captureBuilder.set(CaptureRequest.CONTROL_EFFECT_MODE, getFilterNumber());
@@ -1102,9 +1103,13 @@ public class Camera2BasicFragment extends Fragment
 
         public Bitmap ByteArrayToBitmap(byte[] byteArray)
         {
-            ByteArrayInputStream arrayInputStream = new ByteArrayInputStream(byteArray);
-            Bitmap bitmap = BitmapFactory.decodeStream(arrayInputStream);
-            return bitmap;
+            //ByteArrayInputStream arrayInputStream = new ByteArrayInputStream(byteArray);
+            Log.e("test -> arry byte = ", String.valueOf(byteArray));
+            Log.e("byteArray.length = ", String.valueOf(byteArray.length));
+            //Bitmap bitmap = BitmapFactory.decodeStream()
+            Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+            Log.e("bitmap ici ->>> ", String.valueOf(bmp));
+            return bmp;
         }
 
         /**
@@ -1115,17 +1120,23 @@ public class Camera2BasicFragment extends Fragment
          * bitmap
          */
         public static byte[] convertBitmapToByteArray(Bitmap bitmap) {
+            Log.e("TOTO", String.valueOf(bitmap));
             if (bitmap == null) {
                 return null;
             } else {
                 byte[] b = null;
                 try {
+                    Log.e("TOTO", "test");
                     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 0, byteArrayOutputStream);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 0, byteArrayOutputStream);
+                    Log.e("TOTO", String.valueOf(bitmap));
                     b = byteArrayOutputStream.toByteArray();
+                    Log.e("TOTO", String.valueOf(b));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                Log.e("TOTO", "fin");
+
                 return b;
             }
         }
@@ -1139,24 +1150,33 @@ public class Camera2BasicFragment extends Fragment
             byte[] bytes = new byte[buffer.remaining()];
 
 
-            //
-            //
-
-         /*   if ( filter_choice_rendering == "retro" ) {
-                Bitmap tmp_image = ByteArrayToBitmap(bytes);
-                Bitmap f_image= toSephia(tmp_image);
-                bytes = convertBitmapToByteArray(f_image);
-            }
-            */
-            //
-            //
 
             buffer.get(bytes);
+
+
             FileOutputStream output = null;
+
+
+            //
+            //
+
+            if ( filter_choice_rendering == "retro" ) {
+                Bitmap tmp_image = ByteArrayToBitmap(bytes);
+                Log.e("BITMAAAAAP", String.valueOf(tmp_image));
+                Bitmap f_image= toSephia(tmp_image);
+                Log.e("BITMAAAAAP 222", String.valueOf(f_image));
+                bytes = convertBitmapToByteArray(f_image);
+                Log.e("bytes 2", String.valueOf(bytes));
+            }
+
+            //
+            //
             try {
                 output = new FileOutputStream(mFile);
                 output.write(bytes);
+                Log.e("WRITE", "OK");
             } catch (IOException e) {
+                Log.e("WRITE", "NOK");
                 e.printStackTrace();
             } finally {
                 mImage.close();
@@ -1219,12 +1239,19 @@ public class Camera2BasicFragment extends Fragment
 
     public static Bitmap toSephia(Bitmap bmpOriginal)
     {
+
+        Log.e("SEPHIA", "TEsT ICI");
+
         int width, height, r,g, b, c, gry;
         height = bmpOriginal.getHeight();
         width = bmpOriginal.getWidth();
         int depth = 20;
 
         Bitmap bmpSephia = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+
+        Log.e("SEPHIA", String.valueOf(bmpSephia));
+
+
         Canvas canvas = new Canvas(bmpSephia);
         Paint paint = new Paint();
         ColorMatrix cm = new ColorMatrix();
@@ -1233,6 +1260,8 @@ public class Camera2BasicFragment extends Fragment
         paint.setColorFilter(f);
         canvas.drawBitmap(bmpOriginal, 0, 0, paint);
         for(int x=0; x < width; x++) {
+            Log.e("BOUCLE SEPHIA", String.valueOf(x));
+
             for(int y=0; y < height; y++) {
                 c = bmpOriginal.getPixel(x, y);
 
@@ -1255,6 +1284,8 @@ public class Camera2BasicFragment extends Fragment
                 bmpSephia.setPixel(x, y, Color.rgb(r, g, b));
             }
         }
+        Log.e("SEPHIA", String.valueOf(bmpSephia));
+
         return bmpSephia;
     }
 
